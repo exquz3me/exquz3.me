@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 36" preserveAspectRatio="none" fill="none">
+  <defs>
+    <linearGradient id="paint" x1="0" y1="0" x2="1440" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ff528f"/>
+      <stop offset=".2" stop-color="#ff8b47"/>
+      <stop offset=".4" stop-color="#e4ef73"/>
+      <stop offset=".6" stop-color="#62e3b8"/>
+      <stop offset=".8" stop-color="#65baff"/>
+      <stop offset="1" stop-color="#be7bff"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#paint)" d="M0 0H1440V8
+    C1388 5 1352 13 1316 11
+    C1301 10 1295 7 1288 10
+    C1282 13 1285 21 1277 22
+    C1269 23 1272 12 1263 10
+    C1225 3 1194 6 1150 9
+    C1095 13 1066 5 1032 9
+    C1013 11 1007 10 1003 17
+    C1000 23 1005 34 994 35
+    C983 36 982 27 983 21
+    C984 12 972 11 954 10
+    C908 7 885 15 844 12
+    C794 8 770 3 724 7
+    C683 10 655 15 628 11
+    C614 9 609 10 607 15
+    C605 20 610 25 602 26
+    C593 27 594 17 590 14
+    C583 8 567 9 547 10
+    C492 14 459 4 414 7
+    C370 9 340 16 301 11
+    C262 6 242 5 224 9
+    C213 12 216 17 214 23
+    C212 30 202 31 198 24
+    C194 17 200 12 187 10
+    C139 3 112 11 78 12
+    C43 13 22 6 0 8Z"/>
+</svg>
