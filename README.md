@@ -14,9 +14,13 @@ To use `exquz3.me` as a custom domain, configure it in GitHub Pages and set the 
 
 ## Customize
 
-Edit the personal description below the main headline, project cards, and profile links in `index.html`. Change the design in `styles.css`. The page has no JavaScript or external asset dependencies. GitHub and npm links appear in the top bar; YouTube, Discord, Flockmod, and Steam appear in Elsewhere. The white identity tile is decorative.
+Edit the personal description below the main headline, project cards, and profile links in `index.html`. Change the design in `styles.css`. All assets are local. GitHub and npm links appear in the top bar; YouTube, Discord, Flockmod, and Steam appear in Elsewhere. The white identity tile is decorative.
 
 The sphoon and nlobby4 cards display `assets/sphoon-banner.png` and `assets/nlobby4-banner.png` over `assets/project-placeholder.svg`, which remains beneath them while the banners load. Update each banner's `src`, `alt`, `width`, and `height` in `index.html` to replace it. Banners load lazily. Cards reserve a 16:9 preview area to avoid layout shifts, appear side by side on desktop, and stack on mobile.
+
+The box's dove is an inline SVG derived from the Noto Sans Symbols 2 dove glyph. [Vivus](https://github.com/maxwellito/vivus) 0.4.6 draws its contours once as it enters the viewport, with ease-out timing over 2.71 seconds, then fades in the black fill. Elapsed time drives the drawing so its duration stays consistent across refresh rates. The library is vendored locally, so visitors need no CDN connection. Reduced-motion preferences, disabled JavaScript, or an unavailable library show the completed dove. The library's MIT license and the glyph's font license are included under `assets/vendor/`.
+
+`assets/background-line.js` scales the gradient line uniformly to the page height, preserving its aspect ratio. It stays anchored to the left and clips at the page edges on narrow screens. Its repeated, smoothly joined S-curves use visual rhythm with evenly spaced turns. An SVG mask softly fades the line near individual text lines. Scaling and masks update after fonts load and when the layout resizes; the line draws toward the lower viewport as you scroll down, with a short linear transition, and retains its furthest progress when you scroll up. Reaching the bottom completes it. Reduced motion shows the full line immediately.
 
 The portfolio also links to the [nlobby4 GitHub organization](https://github.com/nlobby4) and lists the existing profile redirects:
 

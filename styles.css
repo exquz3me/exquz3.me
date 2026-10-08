@@ -13,12 +13,11 @@
   font-family: Arial, Helvetica, sans-serif;
   --muted: #aaa;
   --line: #333;
-  --paint-height: clamp(26px, 2.4vw, 34px);
 }
 
 * { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 body { margin: 0; }
-.paint-strip { position: absolute; inset: 0 0 auto; height: var(--paint-height); background: url("assets/paint-strip.svg") center top / 100% 100% no-repeat; pointer-events: none; }
 a { color: inherit; }
 .arrow { display: inline-block; width: 16px; height: 16px; flex-shrink: 0; vertical-align: middle; }
 .arrow-down { transform: rotate(135deg); }
@@ -26,7 +25,10 @@ a { color: inherit; }
 ::selection { background: #fff; color: #010101; }
 a:focus-visible { outline: 2px solid #fff; outline-offset: 6px; }
 section[id], main[id] { scroll-margin-top: 28px; }
-.page { max-width: 1600px; margin: auto; padding: calc(var(--paint-height) + 18px) clamp(20px, 5vw, 80px) 24px; }
+.page { position: relative; isolation: isolate; max-width: 1600px; margin: auto; padding: 32px clamp(20px, 5vw, 80px) 24px; }
+.background-line { position: absolute; inset: 0; z-index: 1; overflow: hidden; pointer-events: none; }
+.background-line svg { display: block; width: 100%; height: 100%; }
+.tile, .button, .project { position: relative; z-index: 2; }
 .skip-link { position: absolute; top: 12px; left: 20px; z-index: 2; padding: 12px; background: #fff; color: #010101; transform: translateY(-180%); }
 .skip-link:focus { transform: translateY(0); }
 .top { display: flex; align-items: center; justify-content: space-between; gap: 24px; border-bottom: 1px solid var(--line); padding-bottom: 24px; }
@@ -51,10 +53,15 @@ nav a:hover { color: #fff; text-decoration: underline; text-underline-offset: 5p
 h1, h2, h3 { font-family: Raleway, Arial, sans-serif; font-weight: 800; }
 h1 { font-size: min(7.8vw, 7cqi, 112px); line-height: .97; letter-spacing: -.055em; margin: 0; }
 h1 span { display: block; white-space: nowrap; }
-.tile { width: min(100%, 28cqi, 240px); aspect-ratio: 1; justify-self: center; background: #fff; color: #010101; display: flex; flex-direction: column; justify-content: space-between; padding: clamp(12px, 2.5cqi, 24px); text-decoration: none; }
+.tile { width: min(100%, 28cqi, 240px); aspect-ratio: 1; justify-self: center; background: #fff; color: #010101; display: flex; flex-direction: column; justify-content: space-between; padding: clamp(12px, 2.5cqi, 24px); }
 .tile-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-bottom: 14px; border-bottom: 1px solid #c5c5c5; font: clamp(7px, 1cqi, 10px)/1.3 monospace; letter-spacing: .04em; }
 .tile-circle { width: clamp(12px, 2.5cqi, 24px); height: clamp(12px, 2.5cqi, 24px); flex-shrink: 0; }
-.tile-mark { font-size: clamp(36px, 11cqi, 104px); }
+.tile-mark { display: block; width: clamp(36px, 11cqi, 104px); height: auto; aspect-ratio: 1007 / 795; flex-shrink: 0; overflow: visible; }
+.dove-fill { opacity: 1; transition: opacity 350ms ease; }
+.dove-strokes { opacity: 0; }
+.is-drawn .dove-strokes { opacity: 1; }
+.is-drawing .dove-fill { opacity: 0; transition: none; }
+.is-drawing .dove-strokes { opacity: 1; transition: none; }
 .dove { font-family: "Noto Sans Symbols 2", "Segoe UI Symbol", "Apple Symbols", sans-serif; font-weight: 400; letter-spacing: 0; line-height: 1; }
 .intro-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
 .button { display: inline-flex; align-items: center; justify-content: space-between; gap: 46px; padding: 15px 18px; min-height: 48px; font-size: 12px; font-weight: 700; background: #fff; color: #010101; border: 1px solid #fff; text-decoration: none; }
@@ -64,7 +71,7 @@ h1 span { display: block; white-space: nowrap; }
 h2 { margin: 0; font-size: clamp(28px, 3.1vw, 44px); line-height: 1.1; letter-spacing: -.045em; }
 .section-heading .eyebrow { margin: 0; font-size: 9px; }
 .project-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
-.project { display: flex; flex-direction: column; min-width: 0; border: 1px solid var(--line); text-decoration: none; }
+.project { display: flex; flex-direction: column; min-width: 0; border: 1px solid var(--line); background: #010101; text-decoration: none; }
 .project-preview { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: #111; border-bottom: 1px solid var(--line); }
 .project-preview img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .project-preview .project-banner { position: absolute; inset: 0; z-index: 1; }
@@ -91,9 +98,7 @@ footer a { text-decoration: none; }
 footer a:hover { color: #fff; }
 
 @media (max-width: 700px) {
-  :root { --paint-height: 22px; }
-  .paint-strip { background-image: url("assets/paint-strip-mobile.svg"); }
-  .page { padding-top: calc(var(--paint-height) + 14px); }
+  .page { padding-top: 24px; }
   .identity-label { display: none; }
   .top { gap: 16px; }
   nav { flex-wrap: wrap; justify-content: flex-end; gap: 12px 18px; }
@@ -120,6 +125,13 @@ footer a:hover { color: #fff; }
 }
 
 @media (forced-colors: active) {
+  .background-line { display: none; }
   .tile { border: 1px solid CanvasText; }
   .button { border: 1px solid ButtonText; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .dove-fill, .is-drawing .dove-fill { opacity: 1; transition: none; }
+  .dove-strokes, .is-drawing .dove-strokes { opacity: 0; transition: none; }
 }
