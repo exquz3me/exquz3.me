@@ -2,6 +2,7 @@
   const page = document.querySelector('.page');
   const svg = document.querySelector('.background-line svg');
   if (!page || !svg) return;
+  const heading = page.querySelector('#work-title');
   const ns = 'http://www.w3.org/2000/svg';
   const measure = document.createElement('canvas').getContext('2d');
   const line = svg.querySelector('.routed-line');
@@ -11,6 +12,11 @@
   let scrollFrame = 0;
   let progress = 0;
   let length = 0;
+  let routeHeight = 0;
+  let pageTop = 0;
+  let initialEdge = 0;
+  let maxScroll = 0;
+  const textElements = page.querySelectorAll('.identity, nav a, .eyebrow, h1, h2, h3, .personal-description p, .rail span, .tags, .project p, .short-url, .link-list a > span:first-child, footer > span, footer a');
 
   let samples = [];
   let displayed = 0;
@@ -20,7 +26,6 @@
   let initialized = false;
 
   const paint = () => {
-    line.style.strokeDasharray = `${length} ${length}`;
     line.style.strokeDashoffset = length * (1 - displayed);
     line.style.visibility = displayed > 0 ? 'visible' : 'hidden';
   };
@@ -34,15 +39,11 @@
 
   const draw = () => {
     scrollFrame = 0;
-    const maxScroll = document.documentElement.scrollHeight - innerHeight;
     let next = 0;
     if (motion.matches || maxScroll <= 0 || scrollY >= maxScroll - 2) next = 1;
     else {
-      const pageTop = page.getBoundingClientRect().top;
-      const heading = page.querySelector('#work-title').getBoundingClientRect();
-      const initialEdge = heading.top - pageTop + heading.height * .6 + 16;
       const edge = Math.max(initialEdge,
-        scrollY > 0 ? innerHeight * .8 - pageTop : initialEdge);
+        scrollY > 0 ? innerHeight * .8 + scrollY - pageTop : initialEdge);
       // Find how far along the path the viewport reaches, regardless of
       // how much horizontal distance each curve contains.
       let index = samples.findIndex(point => point.y > edge);
@@ -79,46 +80,35 @@
     const bounds = page.getBoundingClientRect();
     const width = bounds.width;
     const height = bounds.height;
-    // Fit the route to page height without distorting its curves.
-    const scale = height / 1800;
-    const offsetX = 0;
-    const offsetY = height * .095;
-    svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
-    // Bake scaling into the coordinates so dash lengths stay in page pixels.
-    let coordinate = 0;
-    line.setAttribute('d', route.replace(/-?\d+(?:\.\d+)?/g, value =>
-      Number(value) * scale + (coordinate++ % 2 ? offsetY : offsetX)));
-    const gradient = svg.querySelector('#page-gradient');
-    gradient.setAttribute('x1', offsetX);
-    gradient.setAttribute('y1', offsetY);
-    gradient.setAttribute('x2', offsetX + 1200 * scale);
-    gradient.setAttribute('y2', offsetY + height);
-    length = line.getTotalLength();
-    samples = Array.from({ length: 513 }, (_, i) => line.getPointAtLength(length * i / 512));
-    draw();
-    const mask = svg.querySelector('#line-text-fade');
-    mask.setAttribute('x', 0);
-    mask.setAttribute('y', 0);
-    mask.setAttribute('width', width);
-    mask.setAttribute('height', height);
-    const base = svg.querySelector('.line-mask-base');
-    base.setAttribute('width', width);
-    base.setAttribute('height', height);
+    const headingBounds = heading.getBoundingClientRect();
+    pageTop = bounds.top + scrollY;
+    initialEdge = headingBounds.top - bounds.top + headingBounds.height * .6 + 16;
+    maxScroll = document.documentElement.scrollHeight - innerHeight;
 
-    // Fade around individual text lines, including wrapped mobile copy.
+    // Read text layout before changing SVG geometry to avoid forced layouts
+    // between DOM writes and text measurements.
     const zones = document.createDocumentFragment();
-    const selectors = '.identity, nav a, .eyebrow, h1, h2, h3, .personal-description p, .rail span, .tags, .project p, .short-url, .link-list a > span:first-child, footer > span, footer a';
-    for (const element of page.querySelectorAll(selectors)) {
+    const styles = new Map();
+    for (const element of textElements) {
       const textNodes = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
       const range = document.createRange();
       let node;
       while ((node = textNodes.nextNode())) {
         if (!node.textContent.trim()) continue;
-        const style = getComputedStyle(node.parentElement);
-        measure.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
-        const metrics = measure.measureText(node.textContent);
-        const topInset = Math.max(0, metrics.fontBoundingBoxAscent - metrics.actualBoundingBoxAscent);
-        const bottomInset = Math.max(0, metrics.fontBoundingBoxDescent - metrics.actualBoundingBoxDescent);
+        const parent = node.parentElement;
+        let font = styles.get(parent);
+        if (!font) {
+          const style = getComputedStyle(parent);
+          font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+          styles.set(parent, font);
+        }
+        let metrics;
+        if (measure) {
+          measure.font = font;
+          metrics = measure.measureText(node.textContent);
+        }
+        const topInset = metrics ? Math.max(0, (metrics.fontBoundingBoxAscent ?? metrics.actualBoundingBoxAscent) - metrics.actualBoundingBoxAscent) : 0;
+        const bottomInset = metrics ? Math.max(0, (metrics.fontBoundingBoxDescent ?? metrics.actualBoundingBoxDescent) - metrics.actualBoundingBoxDescent) : 0;
         range.selectNodeContents(node);
         for (const r of range.getClientRects()) {
           if (!r.width || !r.height) continue;
@@ -132,7 +122,37 @@
         }
       }
     }
+    // Fit the route to page height without distorting its curves.
+    const scale = height / 1800;
+    const offsetX = 0;
+    const offsetY = height * .095;
+    svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+    // Bake scaling into the coordinates so dash lengths stay in page pixels.
+    if (height !== routeHeight) {
+      let coordinate = 0;
+      line.setAttribute('d', route.replace(/-?\d+(?:\.\d+)?/g, value =>
+        Number(value) * scale + (coordinate++ % 2 ? offsetY : offsetX)));
+      length = line.getTotalLength();
+      samples = Array.from({ length: 513 }, (_, i) => line.getPointAtLength(length * i / 512));
+      line.style.strokeDasharray = `${length} ${length}`;
+      routeHeight = height;
+    }
+    const gradient = svg.querySelector('#page-gradient');
+    gradient.setAttribute('x1', offsetX);
+    gradient.setAttribute('y1', offsetY);
+    gradient.setAttribute('x2', offsetX + 1200 * scale);
+    gradient.setAttribute('y2', offsetY + height);
+    const mask = svg.querySelector('#line-text-fade');
+    mask.setAttribute('x', 0);
+    mask.setAttribute('y', 0);
+    mask.setAttribute('width', width);
+    mask.setAttribute('height', height);
+    const base = svg.querySelector('.line-mask-base');
+    base.setAttribute('width', width);
+    base.setAttribute('height', height);
+
     svg.querySelector('.line-text-zones').replaceChildren(zones);
+    draw();
   };
 
   const schedule = () => {

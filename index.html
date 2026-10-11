@@ -7,7 +7,11 @@
     <meta name="theme-color" content="#010101">
     <title>sphoon's portfolio</title>
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+    <link rel="preload" href="assets/raleway-800.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="stylesheet" href="styles.css">
+    <script src="assets/background-line.js" defer></script>
+    <script src="assets/vendor/vivus-0.4.6.min.js" defer></script>
+    <script src="assets/dove-drawing.js" defer></script>
     <noscript><style>.routed-line { visibility: visible; }</style></noscript>
   </head>
   <body>
@@ -86,7 +90,10 @@
                   <img src="assets/project-placeholder.svg" alt="" width="800" height="450" loading="lazy" decoding="async">
                   <span class="preview-index" aria-hidden="true">001 / SPHOON</span>
                   <span class="preview-label" aria-hidden="true">IMAGE PREVIEW</span>
-                  <img class="project-banner" src="assets/sphoon-banner.png" alt="sphoon banner artwork." width="960" height="540" loading="lazy" decoding="async">
+                  <picture class="project-banner">
+                    <source srcset="assets/sphoon-banner.webp" type="image/webp">
+                    <img src="assets/sphoon-banner.png" alt="sphoon banner artwork." width="960" height="540" loading="lazy" decoding="async">
+                  </picture>
                 </div>
                 <div class="project-copy">
                   <div class="project-heading"><h3>sphoon</h3><svg class="arrow project-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter"/></svg></div>
@@ -99,7 +106,10 @@
                   <img src="assets/project-placeholder.svg" alt="" width="800" height="450" loading="lazy" decoding="async">
                   <span class="preview-index" aria-hidden="true">002 / NLOBBY4</span>
                   <span class="preview-label" aria-hidden="true">IMAGE PREVIEW</span>
-                  <img class="project-banner" src="assets/nlobby4-banner.png" alt="Colorful nlobby4 graffiti and character artwork." width="960" height="540" loading="lazy" decoding="async">
+                  <picture class="project-banner">
+                    <source srcset="assets/nlobby4-banner.webp" type="image/webp">
+                    <img src="assets/nlobby4-banner.png" alt="Colorful nlobby4 graffiti and character artwork." width="960" height="540" loading="lazy" decoding="async">
+                  </picture>
                 </div>
                 <div class="project-copy">
                   <div class="project-heading"><h3>nlobby4</h3><svg class="arrow project-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter"/></svg></div>
@@ -127,8 +137,5 @@
 
       <footer><span>EXQUZ3.ME</span><a href="#main">BACK TO TOP <svg class="arrow arrow-up" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="M5 19 19 5M5 5h14v14" stroke="currentColor" stroke-width="1.8" stroke-linecap="square" stroke-linejoin="miter"/></svg></a></footer>
     </div>
-    <script src="assets/vendor/vivus-0.4.6.min.js" defer></script>
-    <script src="assets/dove-drawing.js" defer></script>
-    <script src="assets/background-line.js" defer></script>
   </body>
 </html>
