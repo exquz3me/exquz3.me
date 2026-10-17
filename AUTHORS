@@ -1,0 +1,13 @@
+# --------------------------------------------------
+# List of repository maintainers
+#
+# This file contains the canonical list of current and past project maintainers.
+# The name and email should match the canonical identity defined in the .mailmap
+# file.
+#
+# This file is kept up to date as project maintainers change.
+# --------------------------------------------------
+
+# Canonical Name <canonical@email.com> (URL)
+
+sphoon <sphoon@nlobby4.org> (https://nlobby4.org)

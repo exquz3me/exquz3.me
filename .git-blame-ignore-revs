@@ -1,0 +1,14 @@
+# --------------------------------------------------
+# Commit blame ignore list.
+#
+# Lists commits whose changes should be ignored by `git blame`,
+# such as formatting-only changes that obscure meaningful line history.
+#
+# To use this file as the default ignore list for blame,
+# run the following command manually:
+#
+# git config blame.ignoreRevsFile .git-blame-ignore-revs
+# --------------------------------------------------
+
+# <revision number>: [Type][Label] Description
+# commit SHA or Hash

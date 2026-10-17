@@ -1,0 +1,51 @@
+# --------------------------------------------------
+# Allowlist git ignore file.
+#
+# Ignore files by default, then allow repository inputs with ! exceptions.
+# Allowed directories can use their own .gitignore files to exclude generated
+# files.
+#
+# A leading / anchors a pattern to the directory containing this file.
+# A trailing / matches directories only. Patterns without a leading or middle
+# slash match names at any depth below this file. The last matching rule wins
+# within a file, while a nested .gitignore takes precedence for its subtree.
+#
+# Allow one file:                   !/path/to/file
+# Allow directory traversal only:   !/path/to/directory/
+# Allow a directory's descendants:  !/path/to/directory/**
+# Allow a root-level file type:     !/*.json
+#
+# !*/ keeps parent directories traversable so nested exceptions can work.
+# Ignored files can still be force-added. Tools may also use these rules for
+# discovery, but this file is not a security boundary.
+#
+# For more information, see:
+# https://git-scm.com/docs/gitignore
+# --------------------------------------------------
+
+# Deny by default
+*
+
+# Allow directory traversal
+!*/
+
+# Allow specific root-level directories
+!/.github/**
+!/.vscode/**
+!/assets/**
+!/media/**
+
+# Allow specific root-level file types
+!/*.*ignore
+!/*.md
+!/*.html
+
+# Allow specific root-level files
+!/.editorconfig
+!/.git-blame-ignore-revs
+!/.gitattributes
+!/.gitmessage
+!/.mailmap
+!/.nojekyll
+!/CNAME
+!/AUTHORS
